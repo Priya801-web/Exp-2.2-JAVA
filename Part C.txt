@@ -1,0 +1,54 @@
+import java.util.*;
+import java.util.stream.*;
+import java.util.Map.Entry;
+
+class Product {
+    String name;
+    double price;
+    String category;
+
+    Product(String name, double price, String category) {
+        this.name = name;
+        this.price = price;
+        this.category = category;
+    }
+
+    @Override
+    public String toString() {
+        return name + " - " + category + " - ?" + price;
+    }
+}
+
+public class ProductAnalysis {
+    public static void main(String[] args) {
+        List<Product> products = Arrays.asList(
+            new Product("Laptop", 75000, "Electronics"),
+            new Product("Phone", 50000, "Electronics"),
+            new Product("Shirt", 1500, "Clothing"),
+            new Product("Jeans", 2000, "Clothing"),
+            new Product("TV", 45000, "Electronics"),
+            new Product("Sofa", 30000, "Furniture"),
+            new Product("Table", 10000, "Furniture")
+        );
+
+        // Group by Category
+        Map<String, List<Product>> groupByCategory = products.stream()
+                .collect(Collectors.groupingBy(p -> p.category));
+        System.out.println("Products Grouped by Category:");
+        groupByCategory.forEach((k, v) -> System.out.println(k + ": " + v));
+
+        // Most expensive product in each category
+        System.out.println("\nMost Expensive Product in Each Category:");
+        Map<String, Optional<Product>> maxByCategory = products.stream()
+                .collect(Collectors.groupingBy(
+                        p -> p.category,
+                        Collectors.maxBy(Comparator.comparingDouble(p -> p.price))
+                ));
+        maxByCategory.forEach((k, v) -> System.out.println(k + ": " + v.get()));
+
+        // Average price of all products
+        double avgPrice = products.stream()
+                .collect(Collectors.averagingDouble(p -> p.price));
+        System.out.println("\nAverage Price of All Products: ?" + avgPrice);
+    }
+}
